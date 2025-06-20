@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Savers - Employee Assistant</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, rgb(74, 72, 72) 0%, rgb(50, 48, 48) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(4, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, yellow , #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .title-section h1 {
+            color: #f4f6f9;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            background: #48bb78;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .chatbot-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chatbot-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            pointer-events: none;
+        }
+
+        .chatbot-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 20px;
+        }
+
+        .footer {
+            background: rgba(10, 1, 1, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading animation */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            flex-direction: column;
+            gap: 1rem;
+            color: #667eea;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .title-section h1 {
+                font-size: 1.5rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .chatbot-wrapper {
+                height: 500px;
+                border-radius: 15px;
+            }
+
+            .status-badge {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-wrapper {
+                height: 450px;
+                border-radius: 10px;
+            }
+
+            .header-content {
+                align-items: flex-start;
+            }
+
+            .logo-section {
+                align-self: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">TS</div>
+                <div class="title-section">
+                    <h1>Tax Savers Employee Assistant</h1>
+                    <p class="subtitle">Get instant answers to your workplace questions</p>
+                </div>
+            </div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                Live Assistant
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="chatbot-wrapper">
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Loading your assistant...</p>
+            </div>
+            <iframe 
+                class="chatbot-iframe" 
+                src="https://cdn.botpress.cloud/webchat/v2.4/shareable.html?configUrl=https://files.bpcontent.cloud/2025/05/22/23/20250522231721-IX8UY6A7.json"
+                title="Tax Savers Employee Assistant Chatbot"
+                id="chatbot"
+                style="display: none;"
+                onload="hideLoading()"
+            ></iframe>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Tax Savers. Internal Employee Resource | Need technical support? Contact IT Department</p>
+    </footer>
+
+    <script>
+        function hideLoading() {
+            const loading = document.getElementById('loading');
+            const chatbot = document.getElementById('chatbot');
+            
+            setTimeout(() => {
+                loading.style.display = 'none';
+                chatbot.style.display = 'block';
+            }, 500);
+        }
+
+        // Add some interactive elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add a subtle animation to the logo
+            const logo = document.querySelector('.logo');
+            logo.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1) rotate(5deg)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            
+            logo.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) rotate(0deg)';
+            });
+
+            // Add keyboard shortcut info (optional)
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === '/') {
+                    e.preventDefault();
+                    const iframe = document.getElementById('chatbot');
+                    iframe.focus();
+                }
+            });
+        });
+
+        // Error handling for iframe loading
+        document.getElementById('chatbot').addEventListener('error', function() {
+            const loading = document.getElementById('loading');
+            loading.innerHTML = `
+                <div style="color: #e53e3e; text-align: center;">
+                    <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">⚠️ Unable to load assistant</p>
+                    <p style="font-size: 0.9rem;">Please refresh the page or contact IT support if the issue persists.</p>
+                    <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Refresh Page
+                    </button>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
